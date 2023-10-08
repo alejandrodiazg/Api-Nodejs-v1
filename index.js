@@ -1,10 +1,11 @@
 require('dotenv').config()
-
 require('./mongo')
 const Note = require('./models/Note')
 const express = require('express')
 const cors = require('cors')
 const logger = require('./LoggerMiddleware')
+const handleErrors = require('./middlewares/handleErrors')
+const notFound = require('./middlewares/notFound')
 const app = express()
 app.use(cors())
 
@@ -78,22 +79,9 @@ app.put('/api/notes/:id', (req, res, next) => {
   })
 })
 
-app.use((req, res) => {
-  console.log(req.path)
-  res.status(404).json({
-    error: 'Not Found'
-  })
-})
+app.use(notFound)
 
-app.use((error, req, res, next) => {
-  console.error(error)
-  console.log(error.name)
-  if (error.name === 'CastError') {
-    res.status(400).send({ error: 'id used is malformed' })
-  } else {
-    res.status(500).end()
-  }
-})
+app.use(handleErrors)
 
 const PORT = process.env.PORT
 
