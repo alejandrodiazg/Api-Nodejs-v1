@@ -55,7 +55,7 @@ app.get('/api/notes/:id', (req, res, next) => {
 app.delete('/api/notes/:id', (req, res, next) => {
   const id = req.params.id
 
-  Note.findByIdAndRemove(id).then(note => {
+  Note.findByIdAndDelete(id).then(note => {
     res.status(204).end()
   }).catch(error => {
     next(error)
